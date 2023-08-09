@@ -7,6 +7,9 @@ pub use category::Category;
 mod todo;
 pub use todo::ToDo;
 
+mod new_todo;
+pub use new_todo::NewToDo;
+
 mod user;
 pub use user::User;
 

@@ -15,6 +15,8 @@ pub enum ToDoError {
     Internal(#[from] InternalError),
     #[error("User Not Found")]
     UserNotFound,
+    #[error("Invalid Credentials")]
+    InvalidCredentials
 }
 
 #[derive(Debug, Error)]
