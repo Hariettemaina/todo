@@ -1,6 +1,8 @@
 use async_graphql::{Context, InputObject, Object, Result};
+
 use diesel_async::{pooled_connection::deadpool::Pool, AsyncPgConnection, RunQueryDsl};
 use uuid::Uuid;
+
 
 use crate::{models::NewUser, schema::users, ToDoError};
 
@@ -47,4 +49,5 @@ impl Mutation {
 
         Ok(true)
     }
+    
 }
