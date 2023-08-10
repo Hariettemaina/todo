@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use crate::{models::NewUser, schema::users, ToDoError};
 
-use super::Mutation;
+
 
 #[derive(InputObject)]
 pub struct ISignUp {
@@ -29,9 +29,9 @@ impl<'a> From<&'a ISignUp> for NewUser<'a> {
         }
     }
 }
-
+pub struct AddSignUpMutation;
 #[Object]
-impl Mutation {
+impl AddSignUpMutation {
     async fn sign_up<'ctx>(&self, ctx: &Context<'ctx>, credentials: ISignUp) -> Result<bool> {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;

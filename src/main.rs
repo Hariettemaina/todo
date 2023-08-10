@@ -2,14 +2,19 @@ use actix_web::{guard, web, web::Data, App, HttpResponse, HttpServer, Result};
 use async_graphql::{http::GraphiQLSource, EmptySubscription, Schema};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 use diesel_async::pooled_connection::{deadpool::Pool, AsyncDieselConnectionManager};
+use todo::mutation::add_todo::AddTodoMutation;
+use todo::mutation::sign_up::AddSignUpMutation;
 use todo::{InternalError, Mutation, Query};
+
 
 async fn index(
     schema: web::Data<Schema<Query, Mutation, EmptySubscription>>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
-    schema.execute(req.into_inner()).await.into()
+    let request = req.into_inner();
+    schema.execute(request).await.into()
 }
+
 
 async fn index_graphiql() -> Result<HttpResponse> {
     Ok(HttpResponse::Ok()
@@ -28,7 +33,7 @@ async fn main() -> Result<(), InternalError> {
     let config = AsyncDieselConnectionManager::<diesel_async::AsyncPgConnection>::new(database_url);
     let pool = Pool::builder(config).build()?;
 
-    let schema = Schema::build(Query, Mutation, EmptySubscription)
+    let schema = Schema::build(Query, Mutation(AddSignUpMutation,AddTodoMutation), EmptySubscription)
         .data(pool)
         .finish();
 
