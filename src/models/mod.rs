@@ -15,3 +15,9 @@ pub use user::User;
 
 mod new_user;
 pub use new_user::NewUser;
+
+mod new_category;
+pub use new_category::NewCategory;
+
+mod new_categorylookup;
+pub use new_categorylookup::NewCategoryLookup;

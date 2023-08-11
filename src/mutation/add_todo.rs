@@ -34,6 +34,7 @@ impl<'a> From<&'a ITodo> for NewToDo<'a>{
         }
     }
 }
+#[derive(Default)]
 pub struct AddTodoMutation;
 #[Object]    
 impl AddTodoMutation {

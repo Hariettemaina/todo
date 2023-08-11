@@ -44,27 +44,4 @@ impl Query {
     
         Ok(myuser)
     }
-    // async fn login<'ctx>(&self, ctx: &Context<'ctx>, email: String, pass:String) -> Result<bool> {
-        
-
-    //     let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
-    //     let mut connection = pool.get().await?;
-        
-    //     log::info!("Logging in using email: {} and password: {}", email, pass);
-    //     let user = users::table
-    //         .filter(users::email_address.eq(&email))
-    //         .filter(password.eq(Some(pass)))
-    //         .first::<User>(&mut connection)
-    //         .await
-    //         .map_err(|e| {
-    //             log::error!("Failed to fetch user: {}", e);
-    //             ToDoError::UserNotFound
-    //         })?;
-
-    //     // if user.password != credentials.password {
-    //     //     return Err(ToDoError::InvalidCredentials.into());
-    //     // }
-
-    //     Ok(user)
-    // }
 }

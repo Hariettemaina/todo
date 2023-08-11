@@ -29,6 +29,7 @@ impl<'a> From<&'a ISignUp> for NewUser<'a> {
         }
     }
 }
+#[derive(Default)]
 pub struct AddSignUpMutation;
 #[Object]
 impl AddSignUpMutation {

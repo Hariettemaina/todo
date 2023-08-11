@@ -1,7 +1,8 @@
+use async_graphql::SimpleObject;
 use diesel::{Queryable, Selectable};
 use uuid::Uuid;
 
-#[derive(Queryable, Selectable)]
+#[derive(SimpleObject,Queryable, Selectable)]
 #[diesel(table_name = crate::schema::users)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct User {
