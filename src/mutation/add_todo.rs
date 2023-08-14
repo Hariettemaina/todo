@@ -38,7 +38,7 @@ impl<'a> From<&'a ITodo> for NewToDo<'a>{
 pub struct AddTodoMutation;
 #[Object]    
 impl AddTodoMutation {
-    async fn add_todo<'ctx>(&self, ctx: &Context<'ctx>, credentials: ITodo) -> Result<bool> {
+    pub async fn add_todo<'ctx>(&self, ctx: &Context<'ctx>, credentials: ITodo) -> Result<bool> {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;
 

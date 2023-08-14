@@ -21,7 +21,7 @@ impl<'a> From<&'a ICategorylookup> for NewCategoryLookup<'a> {
 pub struct AddCategoryLookupMutation;
 #[Object]
 impl AddCategoryLookupMutation {
-    async fn sign_up<'ctx>(&self, ctx: &Context<'ctx>, credentials: ICategorylookup) -> Result<bool> {
+    pub async fn sign_up<'ctx>(&self, ctx: &Context<'ctx>, credentials: ICategorylookup) -> Result<bool> {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;
 

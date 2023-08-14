@@ -1,4 +1,4 @@
-use crate::{models::{User, NewUser}, schema::users, ToDoError};
+use crate::{models::{User, NewUser}, password::PassWordHasher, schema::users, ToDoError};
 use async_graphql::{Context, Object, Result, SimpleObject};
 use diesel::{query_dsl::methods::FilterDsl, ExpressionMethods};
 use diesel_async::{ AsyncPgConnection, pooled_connection::deadpool::Pool};
@@ -32,12 +32,18 @@ pub struct LoginQuery;
 #[Object]
 impl LoginQuery {
 
-async fn login<'ctx>(&self, ctx: &Context<'ctx>, email: String, pass:String) -> Result<User> {
+    pub async fn login<'ctx>(&self, ctx: &Context<'ctx>, email: String, pass:String) -> Result<User> {
         
 
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;
         
+        let hasher = ctx
+            .data::<PassWordHasher>()
+            .map_err(|e| {
+                log::error!("Failed to get app data: {:?}", e);
+                e
+            }).unwrap();
         let user = users::table
             .filter(users::email_address.eq(&email))
             .filter(users::password.eq(&pass))
@@ -47,11 +53,12 @@ async fn login<'ctx>(&self, ctx: &Context<'ctx>, email: String, pass:String) -> 
                 log::error!("Failed to fetch user: {}", e);
                 ToDoError::UserNotFound
             })?;
-
-        if user.password != user.password {
-            return Err(ToDoError::InvalidCredentials.into());
+            
+            if let false = hasher.verify_password(pass, user.password.clone()) {
+                return Err(async_graphql::Error::new(ToDoError::InvalidCredentials.to_string()));
+            }
+            Ok(user)
         }
 
-        Ok(user)
+        
     }
-}

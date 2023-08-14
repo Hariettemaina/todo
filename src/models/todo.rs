@@ -1,6 +1,7 @@
+use async_graphql::SimpleObject;
 use diesel::{Queryable, Selectable};
 
-#[derive(Queryable, Selectable)]
+#[derive(Queryable, Selectable,SimpleObject)]
 #[diesel(table_name = crate::schema::todos)]
 pub struct ToDo {
     pub id: i32,

@@ -4,7 +4,7 @@ use diesel_async::{pooled_connection::deadpool::Pool, AsyncPgConnection, RunQuer
 use uuid::Uuid;
 
 
-use crate::{models::NewUser, schema::users, ToDoError};
+use crate::{models::NewUser, schema::users::{self}, ToDoError, password::PassWordHasher};
 
 
 
@@ -33,12 +33,20 @@ impl<'a> From<&'a ISignUp> for NewUser<'a> {
 pub struct AddSignUpMutation;
 #[Object]
 impl AddSignUpMutation {
-    async fn sign_up<'ctx>(&self, ctx: &Context<'ctx>, credentials: ISignUp) -> Result<bool> {
+    pub async fn sign_up<'ctx>(&self, ctx: &Context<'ctx>, credentials: ISignUp) -> Result<bool> {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;
+        let hasher = ctx
+        .data::<PassWordHasher>()
+        .map_err(|e| {
+            log::error!("Failed to get app data: {:?}", e);
+            e
+        })
+        .unwrap();
+
+        let _password = hasher.hash_password(credentials.password.clone()).unwrap();
 
         let new_user: NewUser = (&credentials).into();
-
         diesel::insert_into(users::table)
             .values(new_user)
             .execute(&mut connection)

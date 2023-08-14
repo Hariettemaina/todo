@@ -6,23 +6,17 @@ use crate::{models::User, schema::users ,ToDoError};
 
 
 #[derive(SimpleObject)]
-struct Myuser {
+pub struct Myuser {
     username: String,
     email: String,
     //password: String,
 }
-
-pub struct Query;
+#[derive(Default)]
+pub struct UserQuery;
 
 #[Object]
-impl Query {
-    async fn borrow_from_context_data<'ctx>(
-        &self,
-        ctx: &Context<'ctx>
-    ) -> Result<&'ctx String> {
-        ctx.data::<String>()
-    }
-    async fn user<'ctx>(&self, ctx: &Context<'ctx>, email: String) -> Result<Myuser> {
+impl UserQuery {
+    pub async fn user<'ctx>(&self, ctx: &Context<'ctx>, email: String) -> Result<Myuser> {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;
     

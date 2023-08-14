@@ -23,7 +23,7 @@ impl<'a> From<&'a ICategory> for NewCategory<'a> {
 pub struct AddCategoryMutation;
 #[Object]
 impl AddCategoryMutation {
-    async fn sign_up<'ctx>(&self, ctx: &Context<'ctx>, credentials: ICategory) -> Result<bool> {
+    pub async fn addcart<'ctx>(&self, ctx: &Context<'ctx>, credentials: ICategory) -> Result<bool> {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;
 
