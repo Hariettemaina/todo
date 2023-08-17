@@ -9,4 +9,3 @@ pub mod mutation;
 pub use mutation::Mutation;
 
 pub mod query;
-pub use query::Query;

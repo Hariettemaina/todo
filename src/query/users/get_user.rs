@@ -2,6 +2,7 @@ use async_graphql::{Context, Object, Result, SimpleObject};
 use diesel::{query_dsl::methods::FilterDsl, ExpressionMethods};
 use diesel_async::{pooled_connection::deadpool::Pool, AsyncPgConnection, RunQueryDsl};
 
+
 use crate::{models::User, schema::users ,ToDoError};
 
 
@@ -9,14 +10,29 @@ use crate::{models::User, schema::users ,ToDoError};
 pub struct Myuser {
     username: String,
     email: String,
-    //password: String,
+    password: String,
 }
+
+// impl<'a> From<&'a Myuser> for NewUser<'a> {
+//     fn from(input: &'a Myuser) -> Self {
+//         Self {
+//             username: &input.username,
+//             password: &input.password,
+//             email_address: &input.email,
+//             email_verification_code: Uuid::new_v4(),
+//             email_verification_code_expiry: chrono::Local::now()
+//                 .naive_local()
+//                 .checked_add_signed(chrono::Duration::hours(24))
+//                 .unwrap(), 
+//         }
+//     }
+// }
 #[derive(Default)]
 pub struct UserQuery;
 
 #[Object]
 impl UserQuery {
-    pub async fn user<'ctx>(&self, ctx: &Context<'ctx>, email: String) -> Result<Myuser> {
+    pub async fn get_users<'ctx>(&self, ctx: &Context<'ctx>, email: String) -> Result<Myuser> {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;
     
@@ -33,7 +49,7 @@ impl UserQuery {
         let myuser = Myuser {
             username: myuser.username,
             email: myuser.email_address,
-            //password: myuser.password,
+            password: myuser.password,
         };
     
         Ok(myuser)

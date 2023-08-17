@@ -6,14 +6,17 @@ use todo::mutation::add_categorylookup::AddCategoryLookupMutation;
 use todo::mutation::add_todo::AddTodoMutation;
 use todo::mutation::sign_up::AddSignUpMutation;
 use todo::mutation::add_category::AddCategoryMutation;
-use todo::query::get_user::UserQuery;
-use todo::query::login::LoginQuery;
-use todo::{InternalError, Mutation, Query};
+use todo::query::users::Query;
+use todo::query::users::get_user::UserQuery;
+use todo::query::users::login::LoginQuery;
+
+use todo::{InternalError, Mutation};
 use actix_session::{SessionMiddleware, storage::CookieSessionStore};
 
+pub type ApplicationSchema = Schema<Query, Mutation, EmptySubscription>;
 
 async fn index(
-    schema: web::Data<Schema<Query, Mutation, EmptySubscription>>,
+    schema: web::Data<ApplicationSchema>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
