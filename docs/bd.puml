@@ -1,0 +1,46 @@
+@startuml db
+
+entity User {
+    * username: varchar
+    --
+    displayName: varchar
+    * password: varchar
+    * emailAddress: varchar
+    * emailVerified: boolean
+    * emailVerificationCode: uuid
+    * emailVerificationCodeExpiry: date
+}
+
+entity ToDo {
+    * id: number <<generated>>
+    --
+    * username: varchar <<FK>>
+    * title: varchar
+    * completed: boolean
+    description: varchar
+    dueDate: date
+    
+    completedDate: date
+}
+
+entity Category {
+    * id: number <<generated>>
+    --
+    * todoId: number <<FK>>
+    * category: number <<FK>>
+}
+
+entity CategoryLookup {
+    * id: number <<generated>>
+    --
+    * name: varchar
+    * description: varchar
+}
+
+User ||--o{ ToDo
+
+Category }o-|| CategoryLookup
+
+ToDo ||-o{ Category
+
+@enduml
