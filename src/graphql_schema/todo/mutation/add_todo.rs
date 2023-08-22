@@ -1,8 +1,7 @@
+use crate::{models::NewToDo, schema::todos, ToDoError};
 use async_graphql::{Context, InputObject, Object, Result};
 use chrono::NaiveDate;
 use diesel_async::{pooled_connection::deadpool::Pool, AsyncPgConnection, RunQueryDsl};
-use crate::{models::NewToDo,  ToDoError, schema::todos};
-
 
 #[derive(InputObject)]
 pub struct ITodo {
@@ -11,18 +10,20 @@ pub struct ITodo {
     pub title: String,
     pub completed: bool,
     pub description: Option<String>,
-    pub due_date: Option<String>, 
-    pub completed_date: Option<String>, 
+    pub due_date: Option<String>,
+    pub completed_date: Option<String>,
 }
-impl<'a> From<&'a ITodo> for NewToDo<'a>{
+impl<'a> From<&'a ITodo> for NewToDo<'a> {
     fn from(input: &'a ITodo) -> Self {
-        let due_date = input.due_date.clone().and_then(|date| {
-            NaiveDate::parse_from_str(&date, "%Y-%m-%d").ok()
-        });
+        let due_date = input
+            .due_date
+            .clone()
+            .and_then(|date| NaiveDate::parse_from_str(&date, "%Y-%m-%d").ok());
 
-        let completed_date = input.completed_date.clone().and_then(|date| {
-            NaiveDate::parse_from_str(&date, "%Y-%m-%d").ok()
-        });
+        let completed_date = input
+            .completed_date
+            .clone()
+            .and_then(|date| NaiveDate::parse_from_str(&date, "%Y-%m-%d").ok());
 
         Self {
             username: &input.username,
@@ -36,7 +37,7 @@ impl<'a> From<&'a ITodo> for NewToDo<'a>{
 }
 #[derive(Default)]
 pub struct AddTodoMutation;
-#[Object]    
+#[Object]
 impl AddTodoMutation {
     pub async fn add_todo<'ctx>(&self, ctx: &Context<'ctx>, credentials: ITodo) -> Result<bool> {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
@@ -55,8 +56,4 @@ impl AddTodoMutation {
 
         Ok(true)
     }
-    
 }
-
-
-

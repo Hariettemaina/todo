@@ -3,8 +3,6 @@ use diesel_async::{pooled_connection::deadpool::Pool, AsyncPgConnection, RunQuer
 
 use crate::{models::NewCategory, schema::category, ToDoError};
 
-
-
 #[derive(InputObject)]
 pub struct ICategory {
     pub todo_id: i32,
@@ -13,8 +11,8 @@ pub struct ICategory {
 impl<'a> From<&'a ICategory> for NewCategory<'a> {
     fn from(input: &'a ICategory) -> Self {
         Self {
-            todo_id:&input.todo_id,
-            category_id:&input.category_id
+            todo_id: &input.todo_id,
+            category_id: &input.category_id,
         }
     }
 }
@@ -40,5 +38,4 @@ impl AddCategoryMutation {
 
         Ok(true)
     }
-    
 }

@@ -5,7 +5,4 @@ mod error;
 pub mod password;
 pub use error::{InternalError, ToDoError};
 
-pub mod mutation;
-pub use mutation::Mutation;
-
-pub mod query;
+pub mod graphql_schema;

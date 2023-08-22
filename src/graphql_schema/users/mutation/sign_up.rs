@@ -3,10 +3,12 @@ use async_graphql::{Context, InputObject, Object, Result};
 use diesel_async::{pooled_connection::deadpool::Pool, AsyncPgConnection, RunQueryDsl};
 use uuid::Uuid;
 
-
-use crate::{models::NewUser, schema::users::{self}, ToDoError, password::PassWordHasher};
-
-
+use crate::{
+    models::NewUser,
+    password::PassWordHasher,
+    schema::users::{self},
+    ToDoError,
+};
 
 #[derive(InputObject)]
 pub struct ISignUp {
@@ -25,7 +27,7 @@ impl<'a> From<&'a ISignUp> for NewUser<'a> {
             email_verification_code_expiry: chrono::Local::now()
                 .naive_local()
                 .checked_add_signed(chrono::Duration::hours(24))
-                .unwrap(), 
+                .unwrap(),
         }
     }
 }
@@ -37,16 +39,16 @@ impl AddSignUpMutation {
         let pool = ctx.data::<Pool<AsyncPgConnection>>()?;
         let mut connection = pool.get().await?;
         let hasher = ctx
-        .data::<PassWordHasher>()
-        .map_err(|e| {
-            log::error!("Failed to get app data: {:?}", e);
-            e
-        })
-        .unwrap();
+            .data::<PassWordHasher>()
+            .map_err(|e| {
+                log::error!("Failed to get app data: {:?}", e);
+                e
+            })
+            .unwrap();
 
-        let _password = hasher.hash_password(credentials.password.clone()).unwrap();
+            let password = hasher.hash_password(credentials.password.clone()).unwrap();
 
-        let new_user: NewUser = (&credentials).into();
+            let new_user: NewUser = (&credentials).into();
         diesel::insert_into(users::table)
             .values(new_user)
             .execute(&mut connection)
@@ -58,5 +60,4 @@ impl AddSignUpMutation {
 
         Ok(true)
     }
-    
 }
